@@ -21,4 +21,7 @@ jobs:
         key: gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: gradle
     - name: Gradle tests
+      env:
+        GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: ./gradlew test
