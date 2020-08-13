@@ -1,7 +1,7 @@
 package com.github.muraweb;
 
 import com.github.muraweb.analysis.AnalysisController;
-import com.github.muraweb.analysis.AnalysisRepository;
+import com.github.muraweb.analysis.AnalysisService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,7 +21,7 @@ class AnalysisTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AnalysisRepository analysisRepository;
+    private AnalysisService analysisService;
 
     @Test
     public void getAnalysisTest() throws Exception {
