@@ -131,6 +131,7 @@ public class AnalysisController {
 
             // Also export the mutants with their scores
             MutantExporter.exportMutantsToCSV(mutants, config.get("projectDir") + "/mutants.csv");
+            analysis.setMutants(config.get("projectDir") + "/mutants.csv");
 
             analysisRepository.save(analysis);
 
