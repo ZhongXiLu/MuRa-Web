@@ -1,10 +1,12 @@
 package com.github.muraweb.analysis;
 
+import com.github.muraweb.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -34,9 +36,21 @@ public class AnalysisController {
      * Create a new request for a repository to be analyzed by MuRa.
      */
     @PostMapping("/analysis")
-    public String postForm(@ModelAttribute AnalysisForm analysisForm) {
+    public String postForm(@ModelAttribute AnalysisForm analysisForm, RedirectAttributes attr) {
         analysisService.startAnalysis(analysisForm, outputDir);
-        return "analysisForm";  // TODO: return to homepage?
+        attr.addFlashAttribute("message",
+                "Successfully started an analysis for " + Util.getRepoName(analysisForm.getGitRepo()) + "!"
+        );
+        return "redirect:/";    // redirect to homepage
+    }
+
+    /**
+     * Get all the analyses.
+     */
+    @GetMapping("/")
+    public String getAnalyses(Model model) {
+        model.addAttribute("analyses", analysisService.getAllAnalyses());
+        return "index";
     }
 
     /**

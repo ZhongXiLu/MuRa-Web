@@ -169,4 +169,13 @@ public class AnalysisService {
         return null;
     }
 
+    /**
+     * Get all the analyses.
+     *
+     * @return All the analyses.
+     */
+    public List<Analysis> getAllAnalyses() {
+        return (List<Analysis>) analysisRepository.findAll();
+    }
+
 }
