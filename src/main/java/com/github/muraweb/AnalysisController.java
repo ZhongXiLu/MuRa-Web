@@ -14,6 +14,7 @@ import core.rankers.usage.UsageRanker;
 import lumutator.Configuration;
 import lumutator.Mutant;
 import org.eclipse.jgit.api.Git;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,21 +33,27 @@ import static pitest.Parser.getMutantsWithMutantType;
 @Controller
 public class AnalysisController {
 
+    @Autowired
+    private AnalysisRepository analysisRepository;
+
     @GetMapping("/analysis")
     public String getForm() {
         return "analysis";
     }
 
     @PostMapping("/analysis")
-    public String postForm(@ModelAttribute Analysis analysis, Model model) {
+    public String postForm(@ModelAttribute AnalysisForm analysisForm, Model model) {
+
+        Analysis analysis = new Analysis();
 
         try {
             // Clone project
-            final File projectDir = new File("repos" + File.separator + analysis.hashCode());
+            analysis.setGitRepo(analysisForm.getGitRepo());
+            final File projectDir = new File("repos" + File.separator + analysisForm.hashCode());
             if (!projectDir.exists()) {
                 projectDir.mkdirs();
                 Git.cloneRepository()
-                        .setURI(analysis.getGitDir())
+                        .setURI(analysisForm.getGitRepo())
                         .setDirectory(projectDir)
                         .call();
             }
@@ -56,13 +63,13 @@ public class AnalysisController {
             Configuration.getInstance().initialize("config.xml");
             config.set("projectDir", projectDir.getCanonicalPath());
             ConfigurationSetup.addPITest(new File(config.get("projectDir") + "/pom.xml"));
-            if (!analysis.isSingleModule()) config.set("sourcePath", analysis.getModule() + "/src/main/java/");
+            if (!analysisForm.isSingleModule()) config.set("sourcePath", analysisForm.getModule() + "/src/main/java/");
 
             // Run mutation testing with PITest
             ProcessBuilder processBuilder = null;
-            if (!analysis.isSingleModule()) {
+            if (!analysisForm.isSingleModule()) {
                 processBuilder = new ProcessBuilder(
-                        "mvn", "clean", "test", "-pl", analysis.getModule(),
+                        "mvn", "clean", "test", "-pl", analysisForm.getModule(),
                         "-Dfeatures=+EXPORT", "org.pitest:pitest-maven:mutationCoverage"
                 );
             } else {
@@ -75,9 +82,7 @@ public class AnalysisController {
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+            while ((reader.readLine()) != null) {
             }  // read output from buffer, otherwise buffer might get full
             process.waitFor();
             reader.close();
@@ -88,43 +93,46 @@ public class AnalysisController {
             // Parse PITest mutants
             List<Mutant> mutants = getMutantsWithMutantType(
                     Paths.get(config.get("projectDir"),
-                            analysis.isSingleModule() ? "" : analysis.getModule(),
+                            analysisForm.isSingleModule() ? "" : analysisForm.getModule(),
                             "target", "pit-reports").toString(),
                     true, RankedMutant.class
             );
 
             // Setup configuration for MuRa
-            if (!analysis.isSingleModule()) {
+            if (!analysisForm.isSingleModule()) {
                 // Append module to paths
-                config.set("classFiles", projectDir + "/" + analysis.getModule() + "/target/classes");
-                config.set("classPath", projectDir + "/" + analysis.getModule() + "/target/classes/:" + projectDir + "/" + analysis.getModule() + "/target/test-classes/");
-                config.set("sourcePath", projectDir + "/" + analysis.getModule() + "/src/main/java/");
-                config.set("testDir", projectDir + "/" + analysis.getModule() + "/src/test/java/");
+                config.set("classFiles", projectDir + "/" + analysisForm.getModule() + "/target/classes");
+                config.set("classPath", projectDir + "/" + analysisForm.getModule() + "/target/classes/:" + projectDir + "/" + analysisForm.getModule() + "/target/test-classes/");
+                config.set("sourcePath", projectDir + "/" + analysisForm.getModule() + "/src/main/java/");
+                config.set("testDir", projectDir + "/" + analysisForm.getModule() + "/src/test/java/");
             } else {
                 config.set("classFiles", projectDir + "/target/classes");
                 config.set("classPath", projectDir + "/target/classes/:" + projectDir + "/target/test-classes/");
                 config.set("sourcePath", projectDir + "/src/main/java/");
                 config.set("testDir", projectDir + "/src/test/java/");
             }
-            ConfigurationSetup.addClassPath(config, analysis.isSingleModule() ? "" : analysis.getModule());
+            ConfigurationSetup.addClassPath(config, analysisForm.isSingleModule() ? "" : analysisForm.getModule());
             BasicConfigurator basicConfigurator = new BasicConfigurator();
             basicConfigurator.configure(new LoggerContext());
 
             // Call MuRa rankers
-            if (analysis.isCK()) CKRanker.rankCK(mutants, config.get("sourcePath"));
-            if (analysis.isCC()) ComplexityRanker.rank(mutants, config.get("classFiles"));
-            if (analysis.isUSG()) UsageRanker.rank(mutants, config.get("classFiles"));
-            if (analysis.isH() && new File(config.get("projectDir") + File.separator + ".git").exists()) {
+            if (analysisForm.isCK()) CKRanker.rankCK(mutants, config.get("sourcePath"));
+            if (analysisForm.isCC()) ComplexityRanker.rank(mutants, config.get("classFiles"));
+            if (analysisForm.isUSG()) UsageRanker.rank(mutants, config.get("classFiles"));
+            if (analysisForm.isH() && new File(config.get("projectDir") + File.separator + ".git").exists()) {
                 HistoryRanker.rank(mutants);
             }
-            if (analysis.isLC()) CoverageRanker.rank(mutants, config.get("classFiles"));
-            if (analysis.isIMP()) ImpactRanker.rank(mutants, config.get("classFiles"));
+            if (analysisForm.isLC()) CoverageRanker.rank(mutants, config.get("classFiles"));
+            if (analysisForm.isIMP()) ImpactRanker.rank(mutants, config.get("classFiles"));
 
             // Generate the report
             ReportGenerator.generateReport(mutants, config.get("projectDir") + "/report.html");
+            analysis.setReport(config.get("projectDir") + "/report.html");
 
             // Also export the mutants with their scores
             MutantExporter.exportMutantsToCSV(mutants, config.get("projectDir") + "/mutants.csv");
+
+            analysisRepository.save(analysis);
 
         } catch (Exception e) {
             // TODO: return exception to view?

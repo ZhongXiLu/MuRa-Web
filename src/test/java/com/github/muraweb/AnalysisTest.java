@@ -29,7 +29,7 @@ class AnalysisTest {
         RequestBuilder getAnalysisRequest = MockMvcRequestBuilders
                 .post("/analysis")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("gitDir","https://github.com/OpenFeign/feign")
+                .param("gitRepo","https://github.com/OpenFeign/feign")
                 .param("singleModule", "false")
                 .param("module", "core")
                 .param("CK", "true")

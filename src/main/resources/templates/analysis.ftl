@@ -13,8 +13,8 @@
     <form action="/analysis" method="post">
 
         <div class="form-group col-sm-10">
-            <label for="gitDir">Git Repository</label>
-            <input type="text" class="form-control" id="gitDir" name="gitDir">
+            <label for="gitRepo">Git Repository</label>
+            <input type="text" class="form-control" id="gitRepo" name="gitRepo">
             <small class="form-text text-muted">Link to the git repository</small>
         </div>
 
