@@ -1,7 +1,8 @@
-package com.github.muraweb;
+package com.github.muraweb.analysis;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
+import com.github.muraweb.Util;
 import core.MutantExporter;
 import core.RankedMutant;
 import core.ReportGenerator;
@@ -15,11 +16,8 @@ import lumutator.Configuration;
 import lumutator.Mutant;
 import org.eclipse.jgit.api.Git;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import study.ConfigurationSetup;
 
 import java.io.BufferedReader;
@@ -30,26 +28,31 @@ import java.util.List;
 
 import static pitest.Parser.getMutantsWithMutantType;
 
-@Controller
-public class AnalysisController {
+@Service
+public class AnalysisService {
 
     @Autowired
     private AnalysisRepository analysisRepository;
 
-    @GetMapping("/analysis")
-    public String getForm() {
-        return "analysis";
-    }
+    /**
+     * Name of the directory to temporarily store the repositories.
+     */
+    final static String reposDir = "repos";
 
-    @PostMapping("/analysis")
-    public String postForm(@ModelAttribute AnalysisForm analysisForm, Model model) {
-
+    /**
+     * Start an analysis in a separate thread.
+     *
+     * @param analysisForm The form for the analysis, filled in by the user.
+     */
+    @Async
+    public void startAnalysis(AnalysisForm analysisForm, String outputDir) {
         Analysis analysis = new Analysis();
 
         try {
             // Clone project
             analysis.setGitRepo(analysisForm.getGitRepo());
-            final File projectDir = new File("repos" + File.separator + analysisForm.hashCode());
+            analysis.setRepoName(Util.getRepoName(analysisForm.getGitRepo()));
+            final File projectDir = new File(reposDir + File.separator + analysis.getRepoName());
             if (!projectDir.exists()) {
                 projectDir.mkdirs();
                 Git.cloneRepository()
@@ -125,22 +128,45 @@ public class AnalysisController {
             if (analysisForm.isLC()) CoverageRanker.rank(mutants, config.get("classFiles"));
             if (analysisForm.isIMP()) ImpactRanker.rank(mutants, config.get("classFiles"));
 
+            // Create output dir
+            final File outDir = new File(outputDir + File.separator + analysis.getRepoName());
+            if (!outDir.exists()) {
+                outDir.mkdirs();
+            }
+
             // Generate the report
-            ReportGenerator.generateReport(mutants, config.get("projectDir") + "/report.html");
-            analysis.setReport(config.get("projectDir") + "/report.html");
+            ReportGenerator.generateReport(mutants, outDir + "/report.html");
+            analysis.setReport("report.html");
 
             // Also export the mutants with their scores
-            MutantExporter.exportMutantsToCSV(mutants, config.get("projectDir") + "/mutants.csv");
-            analysis.setMutants(config.get("projectDir") + "/mutants.csv");
+            MutantExporter.exportMutantsToCSV(mutants, outDir + "/mutants.csv");
+            analysis.setMutants("mutants.csv");
 
-            analysisRepository.save(analysis);
+            analysis.setSuccessful(true);
 
         } catch (Exception e) {
-            // TODO: return exception to view?
             e.printStackTrace();
-        }
+            analysis.setSuccessful(false);
+            analysis.setErrorMessage(e.getMessage());
 
-        return "analysis";  // TODO: show new page?
+        } finally {
+            analysisRepository.save(analysis);
+        }
+    }
+
+    /**
+     * Get the analysis by its repository name.
+     *
+     * @param repoName The name of the repository that was analyzed.
+     * @return The analysis.
+     */
+    public Analysis getAnalysisByRepoName(String repoName) {
+        for (Analysis analysis : analysisRepository.findAll()) {
+            if (analysis.getRepoName().equals(repoName)) {
+                return analysis;
+            }
+        }
+        return null;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.github.muraweb;
+package com.github.muraweb.analysis;
 
 import java.util.Objects;
 
