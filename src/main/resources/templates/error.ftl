@@ -12,8 +12,7 @@
     <h1>Error</h1>
     <br>
     <h3>Seems like that url does not lead to anything...</h3>
-    <h3>If you are looking for the results of your analysis, the analysis is most likely still running, so why not make
-        yourself a coffee in the meantime :)</h3>
+    <h3>Go back to the <a href="/">homepage</a></h3>
 </div>
 
 </body>

@@ -10,6 +10,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class AnalysisController {
@@ -49,8 +51,10 @@ public class AnalysisController {
      */
     @GetMapping("/")
     public String getAnalyses(Model model) {
-        model.addAttribute("analyses", analysisService.getAllAnalyses());
-        return "index";
+        List<Analysis> analyses = analysisService.getAllAnalyses();
+        Collections.reverse(analyses);
+        model.addAttribute("analyses", analyses);
+        return "index2";
     }
 
     /**
@@ -60,6 +64,7 @@ public class AnalysisController {
      * @return The analysis.
      */
     @GetMapping("/analysis/{repoOwner}/{repoName}")
+    @Deprecated
     public String getAnalysis(Model model, @PathVariable String repoOwner, @PathVariable String repoName) {
         model.addAttribute("analysis", analysisService.getAnalysisByRepoName(repoOwner + "/" + repoName));
         return "analysis";

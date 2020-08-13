@@ -52,6 +52,7 @@ public class AnalysisService {
             // Clone project
             analysis.setGitRepo(analysisForm.getGitRepo());
             analysis.setRepoName(Util.getRepoName(analysisForm.getGitRepo()));
+            analysisRepository.save(analysis);
             final File projectDir = new File(reposDir + File.separator + analysis.getRepoName());
             if (!projectDir.exists()) {
                 projectDir.mkdirs();
@@ -150,6 +151,7 @@ public class AnalysisService {
             analysis.setErrorMessage(e.getMessage());
 
         } finally {
+            analysis.setFinished(true);
             analysisRepository.save(analysis);
         }
     }
