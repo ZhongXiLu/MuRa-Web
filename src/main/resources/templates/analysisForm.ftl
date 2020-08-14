@@ -12,7 +12,7 @@
 <div class="container" style="margin-top: 5%; margin-bottom: 5%">
     <h1>Start an Analysis</h1>
 
-    <form action="/analysis" method="post">
+    <form action="/submit" method="post">
 
         <div class="form-group col-sm-10">
             <label for="gitRepo">Git Repository</label>

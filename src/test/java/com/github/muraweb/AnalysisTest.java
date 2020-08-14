@@ -25,7 +25,7 @@ class AnalysisTest {
 
     @Test
     public void getAnalysisTest() throws Exception {
-        RequestBuilder getAnalysisRequest = MockMvcRequestBuilders.get("/analysis");
+        RequestBuilder getAnalysisRequest = MockMvcRequestBuilders.get("/submit");
         MvcResult result = mockMvc.perform(getAnalysisRequest).andReturn();
         assertEquals(200, result.getResponse().getStatus());
     }
@@ -33,7 +33,7 @@ class AnalysisTest {
     @Test
     public void postAnalysisTest() throws Exception {
         RequestBuilder getAnalysisRequest = MockMvcRequestBuilders
-                .post("/analysis")
+                .post("/submit")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("gitRepo","https://github.com/OpenFeign/feign")
                 .param("singleModule", "false")

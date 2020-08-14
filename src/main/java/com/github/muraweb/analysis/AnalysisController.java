@@ -25,11 +25,19 @@ public class AnalysisController {
     final static String outputDir = "results";
 
     /**
+     * Homepage.
+     */
+    @GetMapping("/")
+    public String index() {
+        return "index2";    // "index" is already taken by a dependency...
+    }
+
+    /**
      * Get an analysis form.
      *
      * @return The analysis form.
      */
-    @GetMapping("/analysis")
+    @GetMapping("/submit")
     public String getForm() {
         return "analysisForm";
     }
@@ -37,7 +45,7 @@ public class AnalysisController {
     /**
      * Create a new request for a repository to be analyzed by MuRa.
      */
-    @PostMapping("/analysis")
+    @PostMapping("/submit")
     public String postForm(@ModelAttribute AnalysisForm analysisForm, RedirectAttributes attr) {
         analysisService.startAnalysis(analysisForm, outputDir);
         attr.addFlashAttribute("message",
@@ -49,12 +57,12 @@ public class AnalysisController {
     /**
      * Get all the analyses.
      */
-    @GetMapping("/")
+    @GetMapping("/analysis")
     public String getAnalyses(Model model) {
         List<Analysis> analyses = analysisService.getAllAnalyses();
         Collections.reverse(analyses);
         model.addAttribute("analyses", analyses);
-        return "index2";
+        return "analyses";
     }
 
     /**
