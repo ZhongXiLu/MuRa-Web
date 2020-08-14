@@ -45,7 +45,7 @@ class AnalysisTest {
                 .param("LC", "true")
                 .param("IMP", "false");
         MvcResult result = mockMvc.perform(getAnalysisRequest).andReturn();
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(302, result.getResponse().getStatus());    // redirect to homepage
     }
 
 }
