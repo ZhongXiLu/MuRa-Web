@@ -16,6 +16,8 @@ public class AnalysisForm {
     private boolean LC;
     private boolean IMP;
 
+    private boolean optimalWeights;
+
     public String getGitRepo() {
         return gitRepo;
     }
@@ -86,6 +88,14 @@ public class AnalysisForm {
 
     public void setIMP(boolean IMP) {
         this.IMP = IMP;
+    }
+
+    public boolean isOptimalWeights() {
+        return optimalWeights;
+    }
+
+    public void setOptimalWeights(boolean optimalWeights) {
+        this.optimalWeights = optimalWeights;
     }
 
     @Override

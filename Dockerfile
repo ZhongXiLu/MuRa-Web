@@ -16,7 +16,7 @@ USER root
 WORKDIR /usr/src/mura-web
 COPY build/libs/*.jar /usr/src/mura-web/mura-web.jar
 COPY entrypoint.sh /usr/src/mura-web/entrypoint.sh
-COPY config.xml /usr/src/mura-web/config.xml
+COPY data /usr/src/mura-web/data/
 RUN chmod +x /usr/src/mura-web/entrypoint.sh
 
 CMD ["/usr/src/mura-web/entrypoint.sh"]

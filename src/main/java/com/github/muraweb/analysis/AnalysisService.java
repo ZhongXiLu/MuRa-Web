@@ -64,7 +64,7 @@ public class AnalysisService {
 
             // Initial configuration for PITest
             Configuration config = Configuration.getInstance();
-            Configuration.getInstance().initialize("config.xml");
+            Configuration.getInstance().initialize("data/config.xml");
             config.set("projectDir", projectDir.getCanonicalPath());
             ConfigurationSetup.addPITest(new File(config.get("projectDir") + "/pom.xml"));
             if (!analysisForm.isSingleModule()) config.set("sourcePath", analysisForm.getModule() + "/src/main/java/");
@@ -138,6 +138,9 @@ public class AnalysisService {
             // Generate the report
             ReportGenerator.generateReport(mutants, outDir + "/report.html");
             analysis.setReport("report.html");
+
+            // Apply optimal weights if applicable
+            if (analysisForm.isOptimalWeights()) Util.applyOptimalWeights(outDir + "/report.html");
 
             // Also export the mutants with their scores
             MutantExporter.exportMutantsToCSV(mutants, outDir + "/mutants.csv");

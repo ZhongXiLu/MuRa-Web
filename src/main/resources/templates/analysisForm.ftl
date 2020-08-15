@@ -85,12 +85,24 @@
             <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="IMP" name="IMP">
                 <label class="custom-control-label" for="IMP"><b>Impact Ranker</b>: ranks mutants based on their impact.
-                    <i>--highly recommended to turn this <b>off</b> for performance reasons (turning this on means
-                        running every test for each mutant leading to very long run times) and the impact did not have
-                        significant influence on the importance of a mutant in an earlier study</i></label>
+                    <i class="text-muted">-- Highly recommended to turn this <b>off</b> for performance reasons
+                    (turning this on means running every test for each mutant leading to very long run times) and the
+                    impact did not have significant influence on the importance of a mutant in an earlier
+                    study</i></label>
             </div>
         </div>
 
+        <hr>
+        <div class="form-group col-sm-10">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="optimalWeights" name="optimalWeights" checked>
+                <label class="custom-control-label" for="optimalWeights">Use <b>optimal weights</b> when ranking the
+                    mutants? <i class="text-muted">-- Note that these weights can be modified afterwards in either case.
+                        These optimal weights were found in an earlier study and were based on a few projects and are
+                        therefore not necessarily suitable for your project, but are nevertheless "better" than the
+                        default weights (i.e. equal weights).</i></label>
+            </div>
+        </div>
         <hr>
         <br>
 
