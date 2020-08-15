@@ -14,6 +14,7 @@ import core.rankers.impact.ImpactRanker;
 import core.rankers.usage.UsageRanker;
 import lumutator.Configuration;
 import lumutator.Mutant;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -22,6 +23,7 @@ import study.ConfigurationSetup;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.List;
@@ -47,13 +49,13 @@ public class AnalysisService {
     @Async
     public void startAnalysis(AnalysisForm analysisForm, String outputDir) {
         Analysis analysis = new Analysis();
+        analysis.setGitRepo(analysisForm.getGitRepo());
+        analysis.setRepoName(Util.getRepoName(analysisForm.getGitRepo()));
+        analysisRepository.save(analysis);
+        final File projectDir = new File(reposDir + File.separator + analysis.getRepoName());
 
         try {
             // Clone project
-            analysis.setGitRepo(analysisForm.getGitRepo());
-            analysis.setRepoName(Util.getRepoName(analysisForm.getGitRepo()));
-            analysisRepository.save(analysis);
-            final File projectDir = new File(reposDir + File.separator + analysis.getRepoName());
             if (!projectDir.exists()) {
                 projectDir.mkdirs();
                 Git.cloneRepository()
@@ -156,6 +158,12 @@ public class AnalysisService {
         } finally {
             analysis.setFinished(true);
             analysisRepository.save(analysis);
+
+            try {
+                FileUtils.deleteDirectory(projectDir);
+            } catch (IOException e) {
+
+            }
         }
     }
 
