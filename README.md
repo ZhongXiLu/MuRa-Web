@@ -1,9 +1,9 @@
 # MuRa Web Interface
 [![](https://github.com/ZhongXiLu/MuRa-Web/workflows/Gradle%20CI/badge.svg)](https://github.com/ZhongXiLu/MuRa-Web/actions?query=workflow%3A%22Gradle+CI%22) [![](https://github.com/ZhongXiLu/MuRa-Web/workflows/Docker%20CI/badge.svg)](https://github.com/ZhongXiLu/MuRa-Web/actions?query=workflow%3A%22Docker+CI%22)
 
-User-friendly web interface for [MuRa](https://github.com/ZhongXiLu/MuRa). It also provides additional features such as applying mutation testing automatically and having an option to use optimal weights when ranking the mutants.
+User-friendly web interface for [MuRa](https://github.com/ZhongXiLu/MuRa). It also provides additional features such as applying mutation testing automatically (using PITest) and having an option to use optimal weights when ranking the mutants.
 
-**Important**: this web interface only works with Maven projects using JUnit4.
+**Important**: this web interface only works with Maven projects using JUnit4. If this is not the case, you can still configure MuRa manually by providing a config file. See [MuRa#how-to-use](https://github.com/ZhongXiLu/MuRa#how-to-use).
 
 ## How to use
 
