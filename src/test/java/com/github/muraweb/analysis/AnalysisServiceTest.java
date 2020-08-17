@@ -3,9 +3,8 @@ package com.github.muraweb.analysis;
 import lumutator.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,10 +15,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
-@DataJpaTest
 class AnalysisServiceTest {
 
-    @Autowired
+    @Mock
     private AnalysisRepository analysisRepository;
 
     private AnalysisService analysisService;

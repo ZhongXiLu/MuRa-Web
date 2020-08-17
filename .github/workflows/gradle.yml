@@ -25,3 +25,7 @@ jobs:
         GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: ./gradlew test
+    - name: Generate JaCoCo reports
+      run: ./gradlew jacocoTestReport
+    - name: Upload reports to Codecov
+      run: bash <(curl -s https://codecov.io/bash)
