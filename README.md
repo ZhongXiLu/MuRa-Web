@@ -1,5 +1,5 @@
 # MuRa Web Interface
-[![](https://github.com/ZhongXiLu/MuRa-Web/workflows/Gradle%20CI/badge.svg)](https://github.com/ZhongXiLu/MuRa-Web/actions?query=workflow%3A%22Gradle+CI%22) [![](https://github.com/ZhongXiLu/MuRa-Web/workflows/Docker%20CI/badge.svg)](https://github.com/ZhongXiLu/MuRa-Web/actions?query=workflow%3A%22Docker+CI%22)
+[![](https://github.com/ZhongXiLu/MuRa-Web/workflows/Gradle%20CI/badge.svg)](https://github.com/ZhongXiLu/MuRa-Web/actions?query=workflow%3A%22Gradle+CI%22) [![](https://github.com/ZhongXiLu/MuRa-Web/workflows/Docker%20CI/badge.svg)](https://github.com/ZhongXiLu/MuRa-Web/actions?query=workflow%3A%22Docker+CI%22) [![](https://images.microbadger.com/badges/version/zhongxilu/mura-web.svg)](https://hub.docker.com/r/zhongxilu/mura-web)
 
 User-friendly web interface for [MuRa](https://github.com/ZhongXiLu/MuRa). It also provides additional features such as applying mutation testing automatically (using PITest) and having an option to use optimal weights when ranking the mutants.
 
