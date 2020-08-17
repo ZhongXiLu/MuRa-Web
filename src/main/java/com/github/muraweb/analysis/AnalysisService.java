@@ -33,7 +33,6 @@ import static pitest.Parser.getMutantsWithMutantType;
 @Service
 public class AnalysisService {
 
-    @Autowired
     private AnalysisRepository analysisRepository;
 
     /**
@@ -42,9 +41,20 @@ public class AnalysisService {
     final static String reposDir = "repos";
 
     /**
+     * Constructor.
+     *
+     * @param analysisRepository The analysis repository.
+     */
+    @Autowired
+    public AnalysisService(AnalysisRepository analysisRepository) {
+        this.analysisRepository = analysisRepository;
+    }
+
+    /**
      * Start an analysis in a separate thread.
      *
      * @param analysisForm The form for the analysis, filled in by the user.
+     * @param outputDir    The output directory where the results will be saved to.
      */
     @Async
     public void startAnalysis(AnalysisForm analysisForm, String outputDir) {

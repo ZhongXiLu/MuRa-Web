@@ -1,7 +1,5 @@
 package com.github.muraweb;
 
-import com.github.muraweb.analysis.AnalysisForm;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -38,7 +36,7 @@ public class Util {
         optimalWeights.load(new FileInputStream("data/optimal_weights.txt"));
 
         Scanner scanner = new Scanner(new File(report));
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             if (line.endsWith("// initial value")) {    // replace initial values for the weights

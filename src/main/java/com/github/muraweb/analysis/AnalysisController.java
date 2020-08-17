@@ -16,13 +16,23 @@ import java.util.List;
 @Controller
 public class AnalysisController {
 
-    @Autowired
     private AnalysisService analysisService;
 
     /**
      * Directory to store the results of the analysis.
      */
     final static String outputDir = "results";
+
+
+    /**
+     * Constructor.
+     *
+     * @param analysisService The analysis service.
+     */
+    @Autowired
+    public AnalysisController(AnalysisService analysisService) {
+        this.analysisService = analysisService;
+    }
 
     /**
      * Homepage.

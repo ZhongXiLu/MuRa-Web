@@ -28,9 +28,11 @@ dependencies {
 	implementation('com.github.mura:study:1.2.4') {
 		exclude group: 'org.slf4j', module: 'slf4j-simple'
 	}
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	testImplementation 'org.mockito:mockito-inline:3.5.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }

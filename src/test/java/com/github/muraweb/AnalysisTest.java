@@ -43,7 +43,8 @@ class AnalysisTest {
                 .param("USG", "true")
                 .param("H", "true")
                 .param("LC", "true")
-                .param("IMP", "false");
+                .param("IMP", "false")
+                .param("optimalWeights", "false");
         MvcResult result = mockMvc.perform(getAnalysisRequest).andReturn();
         assertEquals(302, result.getResponse().getStatus());    // redirect to homepage
     }
