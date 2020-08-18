@@ -5,4 +5,4 @@ until pg_isready -h localhost -p 5432 -U postgres; do
   sleep 0.1
 done
 
-java -jar /usr/src/mura-web/mura-web.jar
+java -jar /usr/src/mura-web/mura-web-*.jar
