@@ -1,4 +1,4 @@
-package com.github.muraweb;
+package com.github.muraweb.analysis;
 
 import com.github.muraweb.analysis.AnalysisController;
 import com.github.muraweb.analysis.AnalysisService;

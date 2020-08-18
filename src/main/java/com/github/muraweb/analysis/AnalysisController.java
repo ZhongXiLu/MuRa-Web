@@ -23,7 +23,6 @@ public class AnalysisController {
      */
     final static String outputDir = "results";
 
-
     /**
      * Constructor.
      *
